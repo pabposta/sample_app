@@ -31,12 +31,12 @@ describe "Layout links" do
     click_link "About"
     response.should render_template('pages/about')
     click_link "Help"
-    response.should # fill in
+    response.should render_template('pages/help')
     click_link "Contact"
-    response.should # fill in
+    response.should render_template('pages/contact')
     click_link "Home"
-    response.should # fill in
+    response.should render_template('pages/home')
     click_link "Sign up now!"
-    response.should # fill in
+    response.should render_template('users/new')
   end
 end
