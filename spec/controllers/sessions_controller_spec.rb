@@ -2,7 +2,21 @@ require 'spec_helper'
 
 describe SessionsController do
   integrate_views
-
+  
+  describe "GET 'new'" do
+    it "should redirect to https" do
+      get 'new'
+      response.should redirect_to(root_url.sub('http', 'https') + 'sessions/new')
+    end
+  end
+  
+  describe "POST 'create'" do
+    it "should redirect to https" do
+      post 'create'
+      response.should redirect_to(root_url.sub('http', 'https') + 'sessions')
+    end
+  end
+=begin
   #Delete these examples and add some real ones
   it "should use SessionsController" do
     controller.should be_an_instance_of(SessionsController)
@@ -76,4 +90,5 @@ describe SessionsController do
       response.should redirect_to(root_path)
     end
   end
+=end
 end
