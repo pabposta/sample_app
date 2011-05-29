@@ -36,10 +36,7 @@ describe "Users" do
 
     describe "failure" do
       it "should not sign a user in" do
-        visit signin_path
-        fill_in :email,    :with => ""
-        fill_in :password, :with => ""
-        click_button
+        integration_sign_in nil
         response.should render_template('sessions/new')
         response.should have_tag("div.flash.error", /invalid/i)
       end
@@ -48,13 +45,20 @@ describe "Users" do
     describe "success" do
       it "should sign a user in and out" do
         user = Factory(:user)
-        visit signin_path
-        fill_in :email,    :with => user.email
-        fill_in :password, :with => user.password
-        click_button
-        controller.should be_signed_in
+        integration_sign_in user
+        controller.signed_in?.should == true
         click_link "Sign out"
-        controller.should_not be_signed_in
+        controller.signed_in?.should_not == true
+      end
+    end
+    
+    describe "sign in - out - in" do
+      it "should sign the user in" do
+        user = Factory(:user)
+        integration_sign_in user
+        click_link "Sign out"
+        integration_sign_in user
+        controller.signed_in?.should == true
       end
     end
   end
