@@ -11,6 +11,7 @@ Rails::Initializer.run do |config|
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.
   config.gem 'gravatar_image_tag'
+  config.gem 'will_paginate', :version => '2.3.12'
   
   # Add additional load paths for your own custom dirs
   # config.load_paths += %W( #{RAILS_ROOT}/extras )

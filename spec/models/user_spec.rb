@@ -144,4 +144,62 @@ describe User do
       @user.remember_token.should_not be_nil
     end
   end
+  
+  describe "update user" do
+	before(:each) do
+	  User.create!(@attr)
+	  @user = User.first
+	  @attr = {
+	    :name => @user.name,
+	    :email => @user.email,
+	    :password => "",
+	    :password_confirmation => ""
+	  }
+	end
+	
+	it "should allow update with blank password" do
+	  updated_user = @user.update_attributes(@attr)
+	  updated_user.should == true
+	end
+	
+	it "should not allow a too short password" do
+	  short_name = "a" * 5
+	  @attr.merge!(:password => short_name, :password_confirmation => short_name)
+	  updated_user = @user.update_attributes(@attr)
+	  updated_user.should_not == true
+	end
+	
+	it "should not allow a too long password" do
+	  long_name = "a" * 41
+	  @attr.merge!(:password => long_name, :password_confirmation => long_name)
+	  updated_user = @user.update_attributes(@attr)
+	  updated_user.should_not == true
+	end
+	
+	it "should require a matching confirmation" do
+	  @attr.merge!(:password => 'valid_pw', :password_confirmation => 'invalid_pw')
+	  updated_user = @user.update_attributes(@attr)
+	  updated_user.should_not == true
+	end
+  end
+  
+  describe "admin attribute" do
+
+    before(:each) do
+      @user = User.create!(@attr)
+    end
+
+    it "should respond to admin" do
+      @user.should respond_to(:admin)
+    end
+
+    it "should not be an admin by default" do
+      @user.should_not be_admin
+    end
+
+    it "should be convertible to an admin" do
+      @user.toggle!(:admin)
+      @user.should be_admin
+    end
+  end
 end

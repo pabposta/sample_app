@@ -1,13 +1,17 @@
 # == Schema Information
-# Schema version: 20110523134725
+# Schema version: 20110530153954
 #
 # Table name: users
 #
-#  id         :integer         not null, primary key
-#  name       :string(255)
-#  email      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
+#  id                 :integer         not null, primary key
+#  name               :string(255)
+#  email              :string(255)
+#  created_at         :datetime
+#  updated_at         :datetime
+#  encrypted_password :string(255)
+#  salt               :string(255)
+#  remember_token     :string(255)
+#  admin              :boolean
 #
 
 require 'digest'
@@ -27,11 +31,11 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password
 
   # Password validations.
-  validates_presence_of :password
-  validates_length_of   :password, :within => 6..40
+  validates_presence_of :password, :unless => :update?
+  validates_length_of   :password, :within => 6..40, :allow_blank => true
   
   before_save :encrypt_password
-
+  
   # Return true if the user's password matches the submitted password.
   def has_password?(submitted_password)
     encrypted_password == encrypt(submitted_password)
@@ -52,7 +56,7 @@ class User < ActiveRecord::Base
   private
 
     def encrypt_password
-      unless password.nil?
+	  unless password.nil? or password.blank?
         self.salt = make_salt
         self.encrypted_password = encrypt(password)
       end
@@ -69,4 +73,12 @@ class User < ActiveRecord::Base
     def secure_hash(string)
       Digest::SHA2.hexdigest(string)
     end
+	
+	def update?
+	  begin
+		User.find(id)
+	  rescue
+	    false
+	  end
+	end
 end

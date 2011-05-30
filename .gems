@@ -1,2 +1,4 @@
 rails -v 2.3.4
 gravatar_image_tag
+will_paginate --version 2.3.12
+faker
