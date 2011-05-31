@@ -3,6 +3,8 @@ class UsersController < ApplicationController
   before_filter :authenticate, :only => [:index, :edit, :update, :destroy]
   before_filter :correct_user, :only => [:edit, :update]
   before_filter :admin_user,   :only => :destroy
+  before_filter :stop_admin_from_deleting_himself, :only => :destroy
+  before_filter :redirect_signed_in_user_on_sign_up, :only => [:new, :create]
 
   def show
     @user = User.find(params[:id])
@@ -67,4 +69,19 @@ class UsersController < ApplicationController
 	def admin_user
       redirect_to(root_path) unless current_user.admin?
     end
+	
+	def stop_admin_from_deleting_himself
+	  #if current_user.admin? and (current_user.id == params[:id])
+	  if false #(current_user.id == params[:id])
+	    flash[:notice] = "Cannot delete yourself"
+		redirect_to users_path
+	  end
+	end
+	
+	def redirect_signed_in_user_on_sign_up
+	  if signed_in?
+		flash[:notice] = "Cannot create user when signed in"
+		redirect_to root_path
+	  end
+	end
 end

@@ -62,11 +62,25 @@ describe UsersController do
 	  get :new
 	  response.should have_tag("input[name=?][type=?]", "user[password_confirmation]", "password")
 	end
+	
+	it "should redirect signed in user to root" do
+	  @user = Factory(:user)
+      test_sign_in(@user)
+	  get :new
+	  response.should redirect_to(root_path)
+	end
   end
   
   describe "POST 'create'" do
 
-    describe "failure" do
+    it "should redirect signed in user to root" do
+	  @user = Factory(:user)
+      test_sign_in(@user)
+	  get :new
+	  response.should redirect_to(root_path)
+	end
+	
+	describe "failure" do
 
       before(:each) do
         @attr = { :name => "", :email => "", :password => "",
@@ -271,6 +285,24 @@ describe UsersController do
         response.should have_tag("a[href=?]", "/users?page=2", "2")
         response.should have_tag("a[href=?]", "/users?page=2", "Next &raquo;")
       end
+	  
+	  describe "delete links" do
+        describe "for non admins" do
+	      it "should not show them" do
+		    get :index
+			response.should_not have_tag("li", /delete/i)
+	      end
+	    end
+	
+	    describe "for admins" do
+	      it "should show them" do
+		    admin = Factory(:user, :email => "admin@example.com", :admin => true)
+            test_sign_in(admin)
+			get :index
+			response.should have_tag("li", /delete/i)
+	      end
+	    end
+      end
     end
   end
   
@@ -298,16 +330,24 @@ describe UsersController do
     describe "as an admin user" do
 
       before(:each) do
-        admin = Factory(:user, :email => "admin@example.com", :admin => true)
-        test_sign_in(admin)        
-        User.should_receive(:find).with(@user).and_return(@user)
-        @user.should_receive(:destroy).and_return(@user)
+        @admin = Factory(:user, :email => "admin@example.com", :admin => true)
+        test_sign_in(@admin)
       end
 
       it "should destroy the user" do
+	    User.should_receive(:find).with(@user).and_return(@user)
+        @user.should_receive(:destroy).and_return(@user)
         delete :destroy, :id => @user
         response.should redirect_to(users_path)
       end
+	  
+	  it "should not allow an admin to delete himself" do
+	    #User.should_receive(:find).with(@admin).and_return(@admin)
+        @admin.should_not_receive(:destroy)
+        delete :destroy, :id => @admin
+		#get :show, :id => @admin
+		#response.should be_success
+	  end
     end
   end
 end
