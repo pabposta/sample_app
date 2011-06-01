@@ -335,19 +335,17 @@ describe UsersController do
       end
 
       it "should destroy the user" do
-	    User.should_receive(:find).with(@user).and_return(@user)
+	      User.should_receive(:find).with(@user).and_return(@user)
         @user.should_receive(:destroy).and_return(@user)
         delete :destroy, :id => @user
         response.should redirect_to(users_path)
       end
 	  
-	  it "should not allow an admin to delete himself" do
-	    #User.should_receive(:find).with(@admin).and_return(@admin)
-        @admin.should_not_receive(:destroy)
+      it "should not allow an admin to delete himself" do
+	      User.should_receive(:find).with(@admin).and_return(@admin)	      
+	      @admin.should_not_receive(:destroy)
         delete :destroy, :id => @admin
-		#get :show, :id => @admin
-		#response.should be_success
-	  end
+      end
     end
   end
 end

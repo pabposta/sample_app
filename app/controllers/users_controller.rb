@@ -8,7 +8,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-	@title = @user.name
+	  @title = @user.name
   end
 
   def new
@@ -50,7 +50,7 @@ class UsersController < ApplicationController
   end
   
   def destroy
-    User.find(params[:id]).destroy
+    @user.destroy
     flash[:success] = "User destroyed."
     redirect_to users_path
   end
@@ -61,27 +61,27 @@ class UsersController < ApplicationController
       deny_access unless signed_in?
     end
 	
-	def correct_user
+    def correct_user
       @user = User.find(params[:id])
       redirect_to(root_path) unless current_user?(@user)
     end
 	
-	def admin_user
+    def admin_user
       redirect_to(root_path) unless current_user.admin?
     end
 	
-	def stop_admin_from_deleting_himself
-	  #if current_user.admin? and (current_user.id == params[:id])
-	  if false #(current_user.id == params[:id])
-	    flash[:notice] = "Cannot delete yourself"
-		redirect_to users_path
+	  def stop_admin_from_deleting_himself
+	    @user = User.find(params[:id])
+	    if current_user.admin? and current_user?(@user)
+	      flash[:notice] = "You cannot delete yourself"
+		    redirect_to users_path
+	    end
 	  end
-	end
 	
-	def redirect_signed_in_user_on_sign_up
-	  if signed_in?
-		flash[:notice] = "Cannot create user when signed in"
-		redirect_to root_path
+	  def redirect_signed_in_user_on_sign_up
+	    if signed_in?
+		    flash[:notice] = "Cannot create user when signed in"
+		    redirect_to root_path
+	    end
 	  end
-	end
 end
