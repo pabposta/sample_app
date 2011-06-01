@@ -34,6 +34,7 @@ ActionController::Routing::Routes.draw do |map|
   # map.root :controller => "welcome"
   map.resources :users
   map.resources :sessions, :only => [:new, :create, :destroy]
+  map.resources :microposts, :only => [:create, :destroy]
   
   # See how all your routes lay out with "rake routes"
   map.contact '/contact', :controller => 'pages', :action => 'contact'
