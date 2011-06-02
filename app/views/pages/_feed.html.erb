@@ -1,6 +1,8 @@
 <% unless @feed_items.empty? %>
-  <table class="microposts">
+  <ol class="microposts">
     <%= render :partial => 'feed_item', :collection => @feed_items %>
-  </table>
-  <%= will_paginate @feed_items %>
+  </ol>
+  <div class = "paginate_posts">
+    <%= will_paginate @feed_items %>
+  </div>
 <% end %>

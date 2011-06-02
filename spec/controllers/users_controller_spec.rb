@@ -38,6 +38,24 @@ describe UsersController do
       response.should have_tag("span.content", mp1.content)
       response.should have_tag("span.content", mp2.content)
     end
+    
+    it "should paginate the microposts" do
+      31.times do
+        Factory(:micropost, :user => @user, :content => "post")
+      end
+      get :show, :id => @user
+      response.should have_tag("div.pagination")
+      response.should have_tag("span", "&laquo; Previous")
+      response.should have_tag("span", "1")
+      response.should have_tag("a[href=?]", "/users/#{@user.id}?page=2", "2")
+      response.should have_tag("a[href=?]", "/users/#{@user.id}?page=2", "Next &raquo;")
+    end
+    
+    it "should wrap long words" do
+      Factory(:micropost, :user => @user, :content => "#{'a' * 50}")
+      get :show, :id => @user
+      response.should have_tag("span.content", /&#8203/)
+    end
   end
   
   describe "GET 'new'" do
@@ -262,7 +280,7 @@ describe UsersController do
         third  = Factory(:user, :email => "another@example.net")
 
         @users = [@user, second, third]
-		30.times do
+		    30.times do
           @users << Factory(:user, :email => Factory.next(:email))
         end
         User.should_receive(:paginate).and_return(@users.paginate)

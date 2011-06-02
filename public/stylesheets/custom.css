@@ -188,6 +188,15 @@ h2.micropost {
   margin-bottom: 0;
 }
 
+ol.microposts {
+  list-style-type: none;
+}
+
+li.microposts {
+  width: 100%;
+  height: auto;
+}
+
 table.microposts tr {
   height: 70px;
 }
@@ -202,6 +211,7 @@ table.microposts tr td.micropost {
   border-top: 1px solid #ccc;
   vertical-align: top;
   padding-top: 10px;
+  width: 100%;
 }
 
 table.microposts tr td.micropost span.timestamp {
@@ -233,4 +243,8 @@ form.new_micropost {
 form.new_micropost textarea {
   height: 4em;
   margin-bottom: 0;
+}
+
+div.paginate_posts {
+  text-align: center;
 }

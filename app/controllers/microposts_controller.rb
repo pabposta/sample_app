@@ -2,6 +2,12 @@ class MicropostsController < ApplicationController
   before_filter :authenticate
   before_filter :authorized_user, :only => :destroy
 
+  def index
+    @user = User.find(params[:user_id])
+    @microposts = @user.microposts.paginate(:page => params[:page])
+    render 'users/show'
+  end
+
   def create
     @micropost  = current_user.microposts.build(params[:micropost])
     if @micropost.save

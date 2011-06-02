@@ -9,7 +9,9 @@
         <table class="microposts">
           <%= render @microposts %>
         </table>
-        <%= will_paginate @microposts %>
+        <div class="paginate_posts">
+          <%= will_paginate @microposts %>
+        </div>
       <% end %>
     
     <td class="sidebar round">
