@@ -12,6 +12,7 @@
 
 class Micropost < ActiveRecord::Base
   attr_accessible :content
+  attr_reader :characters_left
   
   belongs_to :user
   
@@ -19,4 +20,8 @@ class Micropost < ActiveRecord::Base
   validates_length_of   :content, :maximum => 140
   
   default_scope :order => 'created_at DESC'
+  
+  def characters_left
+    140
+  end
 end

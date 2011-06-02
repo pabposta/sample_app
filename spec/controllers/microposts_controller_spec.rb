@@ -89,4 +89,18 @@ describe MicropostsController do
       end
     end
   end
+  
+  describe "nested index" do
+    
+    before(:each) do
+      @user = test_sign_in(Factory(:user))
+      @other_user = Factory(:user, :email => Factory.next(:email))
+    end
+    
+    it "should render the user profile page" do
+      get :index, :user_id => @other_user.id
+      response.should render_template("users/show")
+      response.should have_tag("h2", /#{@other_user.name}/i)
+    end 
+  end
 end

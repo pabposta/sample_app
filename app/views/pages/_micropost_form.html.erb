@@ -1,9 +1,29 @@
-<% form_for @micropost do |f| %>
+<% form_for @micropost, :html => { :name => 'new_micropost' } do |f| %>
   <%= f.error_messages %>
   <div class="field">
-    <%= f.text_area :content %>
+    <%= f.text_area :content,
+        :onKeyDown => 'text_counter(micropost_content, micropost_characters_left, 140)',
+        :onKeyUP => 'text_counter(micropost_content, micropost_characters_left, 140)' %>
+    <p>
+      <%= f.text_field :characters_left, :readonly => true, :size => 1 %>
+      <%= f.label :characters_left, 'Characters left' %>
+    </p>
   </div>
   <div class="actions">
     <%= f.submit "Submit" %>
   </div>
 <% end %>
+
+<script type="text/javascript" language="JavaScript">
+<!-- Adapted by me -->
+<!-- Dynamic Version by: Nannette Thacker 'http://www.shiningstar.net' -->
+<!-- Original by :  Ronnie T. Moore - Web Site:  The JavaScript Source -->
+
+function text_counter(text_field, count_field, max_characters) {
+  if (text_field.value.length > max_characters) // if too long...trim it!
+    text_field.value = text_field.value.substring(0, max_characters);
+  else // otherwise, update 'characters left' counter
+    count_field.value = max_characters - text_field.value.length;
+}
+
+</script>
