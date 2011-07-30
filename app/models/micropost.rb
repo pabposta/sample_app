@@ -21,6 +21,11 @@ class Micropost < ActiveRecord::Base
   
   default_scope :order => 'created_at DESC'
   
+  def self.from_users_followed_by(user)
+    followed_ids = user.following.map(&:id)
+    all(:conditions => ["user_id IN (#{followed_ids}) OR user_id = ?", user])
+  end
+  
   def characters_left
     140
   end
