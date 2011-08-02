@@ -325,5 +325,17 @@ describe User do
       @user.follow!(@followed)
       @followed.followers.include?(@user).should be_true
     end
+    
+    it "should delete the relationships when user is deleted" do
+      @user.follow!(@followed)
+      @followed.destroy
+      @user.should_not be_following(@followed)
+    end
+    
+    it "should delete the reverse relationships when user is deleted" do
+      @user.follow!(@followed)
+      @user.destroy
+      @followed.followers.include?(@user).should be_false
+    end
   end
 end
