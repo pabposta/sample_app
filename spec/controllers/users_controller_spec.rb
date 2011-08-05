@@ -56,6 +56,16 @@ describe UsersController do
       get :show, :id => @user
       response.should have_tag("span.content", /&#8203/)
     end
+    
+    it "should have the right follower/following counts" do
+      other_user = Factory(:user, :email => Factory.next(:email))
+      other_user.follow!(@user)
+      get :show, :id => @user
+      response.should have_tag("a[href=?]", following_user_path(@user), 
+                                            /0 following/)
+      response.should have_tag("a[href=?]", followers_user_path(@user), 
+                                            /1 follower/)
+    end
   end
   
   describe "GET 'new'" do
